@@ -9,7 +9,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,28 +36,27 @@ public class ProductControllerMvcTest {
      * returns a status code of 200 OK.
      */
 
-    @Test
+    @Test // Indicates that this method is a test case to be executed by the testing framework.
     public void test_GetAllProducts_RunSuccessfully() throws Exception {
-
+        // Simulates a GET request to the /products endpoint and expects a successful response (HTTP 200).
         mockMvc.perform(get("/products")).andExpect(status().isOk());
 
-        //Arrange
-        Long id=2L;
-
-        Product product=new Product();
-        product.setId(id);
-        product.setTitle("Iphone 12");
-        List<Product> productList=new ArrayList<>();
-        productList.add(product);
+        // Arrange phase: Setting up the test data.
+        Long id = 2L; // Product ID
+        Product product = new Product(); // Creating a new Product instance.
+        product.setId(id); // Setting the ID of the product.
+        product.setTitle("Iphone 12"); // Setting the title of the product.
+        List<Product> productList = new ArrayList<>(); // Creating a list to hold products.
+        productList.add(product); // Adding the created product to the list.
+        // Mocking the productService to return the productList when getAllProducts is called.
         when(productService.getAllProducts()).thenReturn(productList);
 
+        // Preparing the expected JSON response.
+        String expectedResponse = objectMapper.writeValueAsString(productList);
 
-        String expectedResponse= objectMapper.writeValueAsString(productList);
-
-        //Act
-        mockMvc.perform(get("/products")).andExpect(status().isOk()).andExpect(content().string(expectedResponse));
-
+        // Act phase: Performing the GET request again and verifying the response.
+        mockMvc.perform(get("/products"))
+               .andExpect(status().isOk()) // Expecting a successful response.
+               .andExpect(content().string(expectedResponse)); // Expecting the response content to match the expected JSON.
     }
-
-
 }
